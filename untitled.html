@@ -26,22 +26,44 @@
     }
 
     label::after {
-      -webkit-transition: opacity 1.25s;
-      opacity: 0;
       content: attr(message);
     }
 
-    label.active::after {
-      opacity: 1;
+    label.message::after{
+      /*-webkit-animation: fadeCross 5s 1;*/
     }
+
+    label.showNew::after{
+      -webkit-animation-name: fadeCross;
+      -webkit-animation-duration: 5s;
+      -webkit-animation-fill-mode: forwards;
+      -webkit-animation-direction: alternate;
+
+
+    }
+
+    @-webkit-keyframes fadeCross {
+      0% {opacity: 1;}
+      50% {opacity: 0; content: attr(message);}
+      100% {opacity: 1; content: attr(newMessage);}
+    }
+
+    @-webkit-keyframes fadeOutCross {
+      0% {opacity: 1;}
+      100% {opacity: 0;}
+    }
+
+  /*  label.active::after {
+      opacity: 1;
+    }*/
 
   </style>
 </head>
 <body>
   <p>
-    <label message="Nothing to see here. Just the default state." class="default active"></label>
-    <label message="What's up?" class="whats-up"></label>
-    <label message="Not much." class="not-much"></label>
+    <label message="Nothing to see here. Just the default state." newMessage="Just the new state." class="default active"></label>
+   <!--  <label message="What's up?" class="whats-up"></label>
+    <label message="Not much." class="not-much"></label> -->
   </p>
   <button id="the-button">Click me</button>
   <script>
@@ -62,8 +84,13 @@
       }
     })(0);
 
+    var classToggle = (function() {
+      $('.default').toggleClass("showNew")
+    });
+
     $(function() {
-      $("#the-button").click(iGotPressed);
+      $("#the-button").click(classToggle)
+      // $("#the-button").click(iGotPressed);
     });
 
   </script>
