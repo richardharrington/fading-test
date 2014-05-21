@@ -6,54 +6,66 @@
   <script src="jquery.js"></script>
   <style>
 
-    p, p label {
-      font-size: 100px;
-    }
-
-    p label::after {
-      -webkit-transition: opacity 2s;
-      opacity: 0;
-      content: "";
-    }
-
-    p.class-one label::after {
-      opacity: 1;
-      content: " What's up?";
-    }
-
-    p.class-two label::after {
-      opacity: 1;
-      content: " Not much.";
-    }
-
     button {
       width: 300px;
       height: 100px;
       font-size: 40px;
     }
 
+    p {
+      position: relative;
+      font-size: 100px;
+    }
 
+    label {
+      position: absolute;
+      left: 400px;
+      top: 15px;
+      font-size: 60px;
+      color: red;
+    }
+
+    label::after {
+      -webkit-transition: opacity 1.25s;
+      opacity: 0;
+      content: attr(message);
+    }
+
+    label.active::after {
+      opacity: 1;
+    }
 
   </style>
 </head>
 <body>
-  <p id="the-one" class="default">
-    <span>the main text</span>
-    <label></label>
+  <p>
+    <label message="Nothing to see here. Just the default state." class="default active"></label>
+    <label message="What's up?" class="whats-up"></label>
+    <label message="Not much." class="not-much"></label>
   </p>
-  <button id="the-button">the button</button>
+  <button id="the-button">Click me</button>
   <script>
-    $(function() {
-      var theOne = $("#the-one");
-      var theButton = $("#the-button");
-      var classes = ["default", "class-one", "class-two"];
-      var i = 0;
-      theButton.click(function() {
-        theOne.removeClass(classes[i]);
+
+    var classes = ["default", "whats-up", "not-much"];
+
+    var label = function(i) {
+      return $("label." + classes[i]);
+    };
+
+    var iGotPressed = (function(i) {
+      return function() {
+        var oldLabel = label(i);
         i = (i + 1) % 3;
-        theOne.addClass(classes[i]);
-      });
+        var newLabel = label(i);
+        oldLabel.removeClass('active');
+        newLabel.addClass('active');
+      }
+    })(0);
+
+    $(function() {
+      $("#the-button").click(iGotPressed);
     });
+
   </script>
 </body>
 </html>
