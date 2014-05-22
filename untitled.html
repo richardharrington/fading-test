@@ -44,27 +44,27 @@
     <label message="What's up?" class="whats-up"></label>
     <label message="Not much." class="not-much"></label>
   </p>
-  <button id="the-button">Click me</button>
+  <button>Click me</button>
   <script>
 
     var classes = ["default", "whats-up", "not-much"];
-
+    var numClasses = classes.length;
     var i = 0;
 
     var label = function(i) {
-      return $("label." + classes[i]);
+      return $('label.' + classes[i]);
     };
 
     var iGotPressed = function() {
       var oldLabel = label(i);
-      i = (i + 1) % 3;
+      i = (i + 1) % numClasses;
       var newLabel = label(i);
       oldLabel.removeClass('active');
       newLabel.addClass('active');
     };
 
     var makeItSo = function() {
-      $("#the-button").click(iGotPressed);
+      $('button').click(iGotPressed);
     };
 
     $(makeItSo);
