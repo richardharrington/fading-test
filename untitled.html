@@ -26,21 +26,42 @@
     }
 
     label::after {
-      -webkit-transition: opacity 1s;
-      opacity: 0;
       content: attr(message);
+      opacity: 0;
     }
 
-    label.active::after {
-      -webkit-transition-delay: 1s;
+    label.starting::after {
       opacity: 1;
+    }
+
+    label.animate-in::after {
+      -webkit-animation-name: fade-in;
+      -webkit-animation-duration: 1s;
+      -webkit-animation-delay: 1s;
+      -webkit-animation-fill-mode: forwards;
+    }
+
+    label.animate-out::after {
+      -webkit-animation-name: fade-out;
+      -webkit-animation-duration: 1s;
+      -webkit-animation-fill-mode: forwards;
+    }
+
+    @-webkit-keyframes fade-in {
+      0% {opacity: 0;}
+      100% {opacity: 1;}
+    }
+
+    @-webkit-keyframes fade-out {
+      0% {opacity: 1;}
+      100% {opacity: 0;}
     }
 
   </style>
 </head>
 <body>
   <p>
-    <label message="Nothing to see here. Just the default state." class="default active"></label>
+    <label message="Nothing to see here. Just the default state." class="default starting"></label>
     <label message="What's up?" class="whats-up"></label>
     <label message="Not much." class="not-much"></label>
   </p>
@@ -49,19 +70,25 @@
 
     var classes = ["default", "whats-up", "not-much"];
 
-    var i = 0;
-
     var label = function(i) {
       return $("label." + classes[i]);
     };
 
-    var iGotPressed = function() {
-      var oldLabel = label(i);
-      i = (i + 1) % 3;
-      var newLabel = label(i);
-      oldLabel.removeClass('active');
-      newLabel.addClass('active');
-    };
+    var iGotPressed = (function() {
+      var doneOnce = false;
+      var i = 0;
+      return function() {
+        if (!doneOnce) {
+          $('.starting').removeClass('starting');
+          doneOnce = true;
+        }
+        var oldLabel = label(i);
+        i = (i + 1) % 3;
+        var newLabel = label(i);
+        oldLabel.removeClass('animate-in').addClass('animate-out');
+        newLabel.removeClass('animate-out').addClass('animate-in');
+      };
+    })();
 
     var makeItSo = function() {
       $("#the-button").click(iGotPressed);
